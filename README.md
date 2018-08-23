@@ -4,7 +4,7 @@ TODO: Discord BOT
 
 ## Getting Started
 
-go to [config.exs](config/config.exs) and insert your token
+Go to [config.exs](config/config.exs) and insert your Token
 
 ```shell
 mix deps.get
