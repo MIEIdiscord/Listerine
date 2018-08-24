@@ -1,4 +1,4 @@
-defmodule Listerine.Mixfile do
+defmodule Listerine.MixProject do
   use Mix.Project
 
   def project do
@@ -6,8 +6,8 @@ defmodule Listerine.Mixfile do
       app: :listerine,
       version: "0.1.0",
       elixir: "~> 1.7",
-      build_embedded: {Mix.env == :prod},
-      start_permanent: {Mix.env == :prod},
+      build_embedded: Mix.env == :prod,
+      start_permanent: Mix.env == :prod,
       deps: deps()
     ]
   end
