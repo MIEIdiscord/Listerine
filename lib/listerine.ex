@@ -4,7 +4,7 @@ defmodule Listerine do
 
   def start(_type, _args) do
     children = [
-      worker(Consumer, [])
+      worker(Listerine.Consumer, [])
     ]
 
     options = [
