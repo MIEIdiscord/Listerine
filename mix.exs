@@ -14,6 +14,7 @@ defmodule Listerine.Mixfile do
 
   def application do
     [
+      extra_applicatios: [:logger],
       mod: {Listerine, []}
     ]
   end
