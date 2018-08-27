@@ -22,7 +22,8 @@ defmodule Listerine.MixProject do
   defp deps do
     [
       {:coxir, git: "https://github.com/satom99/coxir.git"},
-      {:coxir_commander, git: "https://github.com/satom99/coxir_commander.git"}
+      {:coxir_commander, git: "https://github.com/satom99/coxir_commander.git"},
+      {:poison, "~> 3.1"}
     ]
   end
 end

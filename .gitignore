@@ -23,3 +23,5 @@ erl_crash.dump
 listerine-*.tar
 
 config/config.exs
+config.json
+mix.lock
