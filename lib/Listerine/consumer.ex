@@ -16,7 +16,7 @@ defmodule Listerine.Consumer do
     }
     
     User.send_message(member.user, %{embed: embed})
-    # TODO: Log potential errors from send_message to a log channel
+
     {:ok, state}
   end
 end
