@@ -15,12 +15,15 @@ defmodule Listerine.Commands do
 
   # REVIEW: See if this bug has been patched
   @permit :BAN_MEMBERS
-  command addcourses(courses) do
-    [y | cl] = String.split(courses, " ")
+  command addcourses(text) do
+    [y | cl] = String.split(text, " ")
 
     cond do
       y in ["1", "2", "3"] ->
-        Listerine.Channels.add_courses(message.guild, y, Enum.uniq(cl))
+        case Listerine.Channels.add_courses(message.guild, y, cl) do
+          [] -> Message.reply(message, "Didn't add any channels")
+          cl -> Message.reply(message, "Added: #{unwords(cl)}")
+        end
 
       true ->
         Message.reply(message, "Usage: `addcourses [1,2,3] [course, ...]`")
@@ -28,15 +31,12 @@ defmodule Listerine.Commands do
   end
 
   @permit :BAN_MEMBERS
-  command rmcourses(courses) do
-    [y | cl] = String.split(courses, " ")
-
-    cond do
-      y in ["1", "2", "3"] ->
-        Listerine.Channels.remove_courses(message.guild, y, Enum.uniq(cl))
-
-      true ->
-        Message.reply(message, "Usage: `addcourses [1,2,3] [course, ...]`")
+  command rmcourses(text) do
+    case Listerine.Channels.remove_courses(message.guild, String.split(text)) do
+      [] -> Message.reply(message, "Didn't remove any channels")
+      cl -> Message.reply(message, "Removed: #{unwords(cl)}")
     end
   end
+
+  defp unwords(words), do: Enum.reduce(words, fn x, a -> a <> " " <> x end)
 end

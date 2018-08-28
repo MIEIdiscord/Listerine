@@ -18,25 +18,31 @@ defmodule Listerine.Channels do
   Adds courses to the guild and registers them to the config.json file
   """
   def add_courses(guild, year, courses) do
-    new_map =
+    courses = Enum.uniq(courses)
+
+    {courses, new_map} =
       case get_courses() do
         nil ->
-          %{"courses" => %{year => courses}}
+          {courses, %{"courses" => %{year => courses}}}
 
         map ->
           case map["courses"][year] do
-            nil -> put_in(map["courses"][year], Enum.uniq(courses))
-            _ -> update_in(map["courses"][year], fn cl -> Enum.uniq(cl ++ courses) end)
+            nil ->
+              put_in(map["courses"][year], courses)
+
+            _ ->
+              # Don't allow repeats
+              courses = courses -- map["courses"][year]
+              {courses, update_in(map["courses"][year], fn cl -> cl ++ courses end)}
           end
       end
 
-    # TODO: Avoid repeats
-    create_course_channels(guild, courses)
     File.write("config.json", Poison.encode!(new_map), [:binary])
+    create_course_channels(guild, courses)
   end
 
   # Creates the private channels, corresponding roles and sets the permissions
-  defp create_course_channels(_, []), do: nil
+  defp create_course_channels(_, []), do: []
 
   defp create_course_channels(guild, [course | others]) do
     role =
@@ -53,46 +59,60 @@ defmodule Listerine.Channels do
     cat = Guild.create_channel(guild, %{name: course, type: 4, permission_overwrites: ow})
     Guild.create_channel(guild, %{name: "duvidas", type: 0, parent_id: cat.id})
 
-    create_course_channels(guild, others)
+    [cat.name | create_course_channels(guild, others)]
   end
 
-  # Returns a role with a given name or `nil` if none are found
+  # Returns a role with a given name or `nil` if none are found.
   defp get_role(l, name), do: Enum.find(l, fn e -> e[:name] == name end)
 
   @doc """
   Removes courses from the config.json file and the corresponding channels and roles
   from the guild.
+
+  Returns the list of removed channels or `nil` if none where removed.
   """
-  def remove_courses(guild, year, courses) do
-    new_map =
-      case get_courses() do
-        nil ->
-          %{"courses" => %{}}
-
-        map ->
-          update_in(map["courses"][year], fn cl -> Enum.uniq(cl -- courses) end)
-      end
-
-    # TODO: Only let registered channels be deleted
-    remove_course_channels(guild.channels, courses)
-    File.write("config.json", Poison.encode!(new_map), [:binary])
-  end
-
-  # Removes the channels and roles from the guild
-  defp remove_course_channels(_, []), do: nil
-
-  defp remove_course_channels(channels, [course | others]) do
-    case Enum.find(channels, fn ch -> ch.name == course end) do
+  def remove_courses(guild, courses) do
+    case get_courses() do
       nil ->
         nil
 
-      ch ->
-        sub_channels = Enum.filter(channels, fn sc -> sc[:parent_id] == ch.id end)
-        Enum.each(sub_channels, fn sc -> Channel.delete(sc) end)
-        Role.delete(get_role(Guild.get_roles(Guild.get(ch.guild_id)), course))
-        Channel.delete(ch)
-    end
+      map ->
+        # Only let registered channels be deleted
+        courses =
+          map["courses"]
+          |> Map.values()
+          |> List.flatten()
+          |> Listerine.Helpers.intersect(courses)
 
-    remove_course_channels(channels, others)
+        new_map =
+          Enum.reduce(Map.keys(map["courses"]), map, fn x, map ->
+            update_in(map["courses"][x], fn cl -> cl -- courses end)
+          end)
+
+        File.write("config.json", Poison.encode!(new_map), [:binary])
+        remove_course_channels(guild.channels, courses)
+    end
+  end
+
+  # Removes the channels and roles from the guild
+  defp remove_course_channels(_, []), do: []
+
+  defp remove_course_channels(channels, [course | others]) do
+    ch =
+      case Enum.find(channels, fn ch -> ch !== nil && ch.name == course end) do
+        nil ->
+          nil
+
+        ch ->
+          sub_channels = Enum.filter(channels, fn sc -> sc[:parent_id] == ch.id end)
+          Enum.each(sub_channels, fn sc -> Channel.delete(sc) end)
+          Role.delete(get_role(Guild.get_roles(Guild.get(ch.guild_id)), course))
+          Channel.delete(ch)
+      end
+
+    case ch do
+      nil -> remove_course_channels(channels, others)
+      _ -> [ch.name | remove_course_channels(channels, others)]
+    end
   end
 end

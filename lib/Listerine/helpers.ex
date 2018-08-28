@@ -26,4 +26,6 @@ defmodule Listerine.Helpers do
       add_role_name(name, message, tail, guild)
     end
   end
+
+  def intersect(a, b), do: a -- a -- b
 end
