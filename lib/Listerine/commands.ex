@@ -16,7 +16,7 @@ defmodule Listerine.Commands do
   # REVIEW: See if this bug has been patched
   @permit :BAN_MEMBERS
   command addcourses(text) do
-    [y | cl] = String.split(text, " ")
+    [y | cl] = String.split(text, " ") |> Enum.filter(fn x -> x != "" end)
 
     cond do
       y in ["1", "2", "3"] ->
