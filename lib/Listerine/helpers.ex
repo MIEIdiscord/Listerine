@@ -1,6 +1,5 @@
 defmodule Listerine.Helpers do
   use Coxir
-  # import Poison
 
   def add_role_list(message, role_names) do
     guild = message.channel.guild_id

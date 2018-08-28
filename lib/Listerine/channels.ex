@@ -1,11 +1,11 @@
 defmodule Listerine.Channels do
   @moduledoc """
-  This module provides functions to create and remove private channels
+  This module provides functions to create and remove private channels.
   """
 
   use Coxir
 
-  # Decodes the config.json file
+  # Reads the channels from the config.json file.
   defp get_courses() do
     case File.read("config.json") do
       {:ok, ""} -> nil
@@ -14,6 +14,7 @@ defmodule Listerine.Channels do
     end
   end
 
+  # Updates the config.json with the new courses.
   defp save_courses(courses) do
     new_map =
       case File.read("config.json") do
@@ -32,7 +33,9 @@ defmodule Listerine.Channels do
   end
 
   @doc """
-  Adds courses to the guild and registers them to the config.json file
+  Adds courses to the guild and registers them to the config.json file.
+
+  Returns the list of added courses or `nil` if none were added.
   """
   def add_courses(guild, year, courses) do
     courses = Enum.uniq(courses)
@@ -58,7 +61,7 @@ defmodule Listerine.Channels do
     Map.keys(added)
   end
 
-  # Creates the private channels, corresponding roles and sets the permissions
+  # Creates the private channels, corresponding roles and sets the permissions.
   defp create_course_channels(_, []), do: %{}
 
   defp create_course_channels(guild, [course | others]) do
@@ -97,8 +100,8 @@ defmodule Listerine.Channels do
         nil
 
       map ->
-        # Only let registered channels be deleted
-        courses =
+        # Only let registered channels be deleted.
+        valid_courses =
           map
           |> Map.values()
           |> Enum.reduce([], fn x, acc -> acc ++ Map.keys(x) end)
@@ -107,12 +110,13 @@ defmodule Listerine.Channels do
         removed =
           map
           |> Map.values()
-          |> Enum.reduce([], fn x, ac -> ac ++ (Map.take(x, courses) |> Map.values()) end)
+          |> Enum.reduce([],
+            fn x, ac -> ac ++ (Map.take(x, valid_courses) |> Map.values()) end)
           |> remove_course_channels()
 
         new_map =
           Enum.reduce(Map.keys(map), map, fn x, acc ->
-            Map.put(acc, x, Map.drop(map[x], courses))
+            Map.put(acc, x, Map.drop(map[x], valid_courses))
           end)
 
         save_courses(new_map)
@@ -121,20 +125,21 @@ defmodule Listerine.Channels do
     end
   end
 
-  # Removes the channels and roles from the guild
+  # Removes the channels and roles from the guild.
   defp remove_course_channels([]), do: []
 
   defp remove_course_channels([course | others]) do
-    monad = fn
+    do_or_nil = fn
       nil, _ -> nil
       x, f -> f.(x)
     end
 
-    Role.get(course["role"]) |> monad.(&Role.delete/1)
+    Role.get(course["role"]) |> do_or_nil.(&Role.delete/1)
     prepend = fn x, l -> [x | l] end
 
     course["channels"]
-    |> Enum.reduce([], fn c, ac -> [Channel.get(c) |> monad.(&Channel.delete/1) | ac] end)
+    |> Enum.reduce([],
+      fn c, ac -> [Channel.get(c) |> do_or_nil.(&Channel.delete/1) | ac] end)
     |> (fn
           nil -> nil
           a -> Enum.find(a, fn x -> x.type == 4 end).name

@@ -24,4 +24,3 @@ listerine-*.tar
 
 config/config.exs
 config.json
-mix.lock
