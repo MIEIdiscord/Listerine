@@ -33,6 +33,25 @@ defmodule Listerine.Channels do
   end
 
   @doc """
+  Generates a Formated field to use in embed with all courses in the given year.
+  """
+  def generateCoursesEmbedField(year) do
+    %{
+      name: (Integer.to_string year) <> "º ano",
+      value: getCoursesYear(year),
+      inline: true
+    }
+  end
+
+  @doc """
+  Generates a string with all the courses in a year separated by a newline
+  """
+  def getCoursesYear(year) do
+    coursesYearArr = Map.keys Map.get get_courses(), Integer.to_string year
+    Enum.join coursesYearArr, "\n"
+  end
+
+  @doc """
   Adds courses to the guild and registers them to the config.json file.
 
   Returns the list of added courses or `nil` if none were added.
