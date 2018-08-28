@@ -9,9 +9,26 @@ defmodule Listerine.Channels do
   defp get_courses() do
     case File.read("config.json") do
       {:ok, ""} -> nil
-      {:ok, body} -> Poison.decode!(body)
-      {:error, _error} -> nil
+      {:ok, body} -> Poison.decode!(body)["courses"]
+      _ -> nil
     end
+  end
+
+  defp save_courses(courses) do
+    new_map =
+      case File.read("config.json") do
+        {:ok, ""} ->
+          %{"courses" => courses}
+
+        {:ok, body} ->
+          map = Poison.decode!(body)
+          Map.put(map, "courses", courses)
+
+        _ ->
+          %{"courses" => courses}
+      end
+
+    File.write("config.json", Poison.encode!(new_map), [:binary])
   end
 
   @doc """
@@ -23,22 +40,27 @@ defmodule Listerine.Channels do
     {courses, new_map} =
       case get_courses() do
         nil ->
-          {courses, %{"courses" => %{year => courses}}}
+          {courses, %{year => courses}}
 
         map ->
-          case map["courses"][year] do
+          case map[year] do
             nil ->
-              put_in(map["courses"][year], courses)
+              {courses, put_in(map[year], courses)}
 
-            _ ->
+            crs ->
               # Don't allow repeats
-              courses = courses -- map["courses"][year]
-              {courses, update_in(map["courses"][year], fn cl -> cl ++ courses end)}
+              courses = courses -- crs
+              {courses, update_in(map[year], fn cl -> cl ++ courses end)}
           end
       end
 
-    File.write("config.json", Poison.encode!(new_map), [:binary])
-    create_course_channels(guild, courses)
+    added = create_course_channels(guild, courses)
+
+    if length(added) > 0 do
+      save_courses(new_map)
+    end
+
+    added
   end
 
   # Creates the private channels, corresponding roles and sets the permissions
@@ -79,18 +101,23 @@ defmodule Listerine.Channels do
       map ->
         # Only let registered channels be deleted
         courses =
-          map["courses"]
+          map
           |> Map.values()
           |> List.flatten()
           |> Listerine.Helpers.intersect(courses)
 
         new_map =
-          Enum.reduce(Map.keys(map["courses"]), map, fn x, map ->
-            update_in(map["courses"][x], fn cl -> cl -- courses end)
+          Enum.reduce(Map.keys(map), map, fn x, map ->
+            update_in(map[x], fn cl -> cl -- courses end)
           end)
 
-        File.write("config.json", Poison.encode!(new_map), [:binary])
-        remove_course_channels(guild.channels, courses)
+        removed = remove_course_channels(guild.channels, courses)
+
+        if length(removed) > 0 do
+          save_courses(new_map)
+        end
+
+        removed
     end
   end
 
