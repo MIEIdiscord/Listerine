@@ -4,7 +4,7 @@ TODO: Discord BOT
 
 ## Getting Started
 
-Rename to [config.exs.example](config/config.exs.example) to `config.exs` and insert your Token
+Rename [config.exs.example](config/config.exs.example) to `config.exs` and insert your Token.
 
 ```shell
 mix deps.get

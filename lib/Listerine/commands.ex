@@ -47,5 +47,27 @@ defmodule Listerine.Commands do
     end
   end
 
+  command mancourses() do
+    embed =
+    %{
+      title: "Informação sobre as cadeiras disponíveis",
+      color: 0xFF0000,
+      footer: %{
+        text: "Qualquer dúvida sobre o bot podes usar `$help` para saberes o que podes fazer."
+      },
+      description:
+        "`$study CADEIRA` junta-te às salas das cadeiras
+         `$study 1ano` junta-te a todas as cadeiras de um ano",
+      fields:
+      (
+        for year <- 1..3, do:
+          Listerine.Channels.generateCoursesEmbedField(year)
+      )
+    }
+
+    Message.reply message, embed: embed
+  end
+
+
   defp unwords(words), do: Enum.reduce(words, fn x, a -> a <> " " <> x end)
 end
