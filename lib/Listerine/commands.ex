@@ -15,8 +15,12 @@ defmodule Listerine.Commands do
 
   # REVIEW: See if this bug has been patched
   @permit :BAN_MEMBERS
-  command addcourses(text) do
-    [y | cl] = String.split(text, " ") |> Enum.filter(fn x -> x != "" end)
+  command mkcourses(text) do
+    [y | cl] =
+      text
+      |> String.split(" ")
+      |> Enum.filter(fn x -> x != "" end)
+      |> Enum.map(&String.upcase/1)
 
     cond do
       y in ["1", "2", "3"] ->
@@ -26,13 +30,18 @@ defmodule Listerine.Commands do
         end
 
       true ->
-        Message.reply(message, "Usage: `addcourses [1,2,3] [course, ...]`")
+        Message.reply(message, "Usage: `mkcourses [1,2,3] [course, ...]`")
     end
   end
 
   @permit :BAN_MEMBERS
   command rmcourses(text) do
-    case Listerine.Channels.remove_courses(String.split(text)) do
+    text =
+      String.split(text, " ")
+      |> Enum.filter(fn x -> x != "" end)
+      |> Enum.map(&String.upcase/1)
+
+    case Listerine.Channels.remove_courses(text) do
       [] -> Message.reply(message, "Didn't remove any channels")
       cl -> Message.reply(message, "Removed: #{unwords(cl)}")
     end
