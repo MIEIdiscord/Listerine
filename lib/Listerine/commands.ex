@@ -32,7 +32,7 @@ defmodule Listerine.Commands do
 
   @permit :BAN_MEMBERS
   command rmcourses(text) do
-    case Listerine.Channels.remove_courses(message.guild, String.split(text)) do
+    case Listerine.Channels.remove_courses(String.split(text)) do
       [] -> Message.reply(message, "Didn't remove any channels")
       cl -> Message.reply(message, "Removed: #{unwords(cl)}")
     end

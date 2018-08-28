@@ -36,35 +36,30 @@ defmodule Listerine.Channels do
   """
   def add_courses(guild, year, courses) do
     courses = Enum.uniq(courses)
+    map_zeros = fn x -> Map.new(x, fn e -> {e, %{"role" => 0, "channels" => []}} end) end
 
     {courses, new_map} =
       case get_courses() do
         nil ->
-          {courses, %{year => courses}}
+          {courses, %{year => map_zeros.(courses)}}
 
         map ->
           case map[year] do
-            nil ->
-              {courses, put_in(map[year], courses)}
-
-            crs ->
-              # Don't allow repeats
-              courses = courses -- crs
-              {courses, update_in(map[year], fn cl -> cl ++ courses end)}
+            nil -> {courses, put_in(map[year], map_zeros.(courses))}
+            crs -> {courses -- Map.keys(crs), map}
           end
       end
 
     added = create_course_channels(guild, courses)
+    new_map = update_in(new_map[year], fn cl -> Map.merge(cl, added) end)
 
-    if length(added) > 0 do
-      save_courses(new_map)
-    end
+    save_courses(new_map)
 
-    added
+    Map.keys(added)
   end
 
   # Creates the private channels, corresponding roles and sets the permissions
-  defp create_course_channels(_, []), do: []
+  defp create_course_channels(_, []), do: %{}
 
   defp create_course_channels(guild, [course | others]) do
     role =
@@ -79,9 +74,12 @@ defmodule Listerine.Channels do
     ]
 
     cat = Guild.create_channel(guild, %{name: course, type: 4, permission_overwrites: ow})
-    Guild.create_channel(guild, %{name: "duvidas", type: 0, parent_id: cat.id})
+    ch1 = Guild.create_channel(guild, %{name: "duvidas", type: 0, parent_id: cat.id})
 
-    [cat.name | create_course_channels(guild, others)]
+    Map.put(create_course_channels(guild, others), cat.name, %{
+      "role" => role.id,
+      "channels" => [cat.id, ch1.id]
+    })
   end
 
   # Returns a role with a given name or `nil` if none are found.
@@ -93,7 +91,7 @@ defmodule Listerine.Channels do
 
   Returns the list of removed channels or `nil` if none where removed.
   """
-  def remove_courses(guild, courses) do
+  def remove_courses(courses) do
     case get_courses() do
       nil ->
         nil
@@ -103,43 +101,44 @@ defmodule Listerine.Channels do
         courses =
           map
           |> Map.values()
-          |> List.flatten()
+          |> Enum.reduce([], fn x, acc -> acc ++ Map.keys(x) end)
           |> Listerine.Helpers.intersect(courses)
 
+        removed =
+          map
+          |> Map.values()
+          |> Enum.reduce([], fn x, ac -> ac ++ (Map.take(x, courses) |> Map.values()) end)
+          |> remove_course_channels()
+
         new_map =
-          Enum.reduce(Map.keys(map), map, fn x, map ->
-            update_in(map[x], fn cl -> cl -- courses end)
+          Enum.reduce(Map.keys(map), map, fn x, acc ->
+            Map.put(acc, x, Map.drop(map[x], courses))
           end)
 
-        removed = remove_course_channels(guild.channels, courses)
-
-        if length(removed) > 0 do
-          save_courses(new_map)
-        end
+        save_courses(new_map)
 
         removed
     end
   end
 
   # Removes the channels and roles from the guild
-  defp remove_course_channels(_, []), do: []
+  defp remove_course_channels([]), do: []
 
-  defp remove_course_channels(channels, [course | others]) do
-    ch =
-      case Enum.find(channels, fn ch -> ch !== nil && ch.name == course end) do
-        nil ->
-          nil
-
-        ch ->
-          sub_channels = Enum.filter(channels, fn sc -> sc[:parent_id] == ch.id end)
-          Enum.each(sub_channels, fn sc -> Channel.delete(sc) end)
-          Role.delete(get_role(Guild.get_roles(Guild.get(ch.guild_id)), course))
-          Channel.delete(ch)
-      end
-
-    case ch do
-      nil -> remove_course_channels(channels, others)
-      _ -> [ch.name | remove_course_channels(channels, others)]
+  defp remove_course_channels([course | others]) do
+    monad = fn
+      nil, _ -> nil
+      x, f -> f.(x)
     end
+
+    Role.get(course["role"]) |> monad.(&Role.delete/1)
+    prepend = fn x, l -> [x | l] end
+
+    course["channels"]
+    |> Enum.reduce([], fn c, ac -> [Channel.get(c) |> monad.(&Channel.delete/1) | ac] end)
+    |> (fn
+          nil -> nil
+          a -> Enum.find(a, fn x -> x.type == 4 end).name
+        end).()
+    |> prepend.(remove_course_channels(others))
   end
 end
