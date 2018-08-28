@@ -50,7 +50,7 @@ defmodule Listerine.Commands do
   command mancourses() do
     embed =
     %{
-      title: "Informação sobre cadeiras disponíveis",
+      title: "Informação sobre as cadeiras disponíveis",
       color: 0xFF0000,
       footer: %{
         text: "Qualquer dúvida sobre o bot podes usar `$help` para saberes o que podes fazer."
