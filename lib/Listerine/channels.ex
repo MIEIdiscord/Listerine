@@ -35,10 +35,10 @@ defmodule Listerine.Channels do
   @doc """
   Generates a Formated field to use in embed with all courses in the given year.
   """
-  def generateCoursesEmbedField(year) do
+  def generate_courses_embed_field(year) do
     %{
-      name: (Integer.to_string year) <> "º ano",
-      value: getCoursesYear(year),
+      name: Integer.to_string(year) <> "º ano",
+      value: get_courses_year(year),
       inline: true
     }
   end
@@ -46,9 +46,9 @@ defmodule Listerine.Channels do
   @doc """
   Generates a string with all the courses in a year separated by a newline
   """
-  def getCoursesYear(year) do
-    coursesYearArr = Map.keys Map.get get_courses(), Integer.to_string year
-    Enum.join coursesYearArr, "\n"
+  defp get_courses_year(year) do
+    courses_year_arr = Map.keys(Map.get(get_courses(), Integer.to_string(year)))
+    Enum.join(courses_year_arr, "\n")
   end
 
   @doc """
@@ -129,8 +129,10 @@ defmodule Listerine.Channels do
         removed =
           map
           |> Map.values()
-          |> Enum.reduce([],
-            fn x, ac -> ac ++ (Map.take(x, valid_courses) |> Map.values()) end)
+          |> Enum.reduce(
+            [],
+            fn x, ac -> ac ++ (Map.take(x, valid_courses) |> Map.values()) end
+          )
           |> remove_course_channels()
 
         new_map =
@@ -157,8 +159,10 @@ defmodule Listerine.Channels do
     prepend = fn x, l -> [x | l] end
 
     course["channels"]
-    |> Enum.reduce([],
-      fn c, ac -> [Channel.get(c) |> do_or_nil.(&Channel.delete/1) | ac] end)
+    |> Enum.reduce(
+      [],
+      fn c, ac -> [Channel.get(c) |> do_or_nil.(&Channel.delete/1) | ac] end
+    )
     |> (fn
           nil -> nil
           a -> Enum.find(a, fn x -> x.type == 4 end).name
