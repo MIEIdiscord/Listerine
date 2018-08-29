@@ -178,7 +178,6 @@ defmodule Listerine.Channels do
     guild = message.channel.guild_id
     member = Guild.get_member(guild, message.author.id)
     roles = get_courses()
-
     roles =
       Map.merge(roles["1"], roles["2"])
       |> Map.merge(roles["3"])

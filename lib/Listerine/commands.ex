@@ -35,7 +35,7 @@ defmodule Listerine.Commands do
       [] ->
         Message.reply(message, "Usage: `unstudy [course, ..]`")
 
-      _ ->
+      _ ->  
         role_list =
           String.upcase(roles)
           |> String.split(" ")
