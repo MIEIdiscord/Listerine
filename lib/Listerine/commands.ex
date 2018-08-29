@@ -13,9 +13,8 @@ defmodule Listerine.Commands do
       [] ->
         Message.reply(message, "Usage: `study [course, ...]`")
       _ ->
-        roles = String.upcase(roles)
-        role_list = String.split(roles, " ")
-        Listerine.Channels.role_list(message, role_list, :add)
+        role_list = String.split(String.upcase(roles), " ")
+        Listerine.Channels.manage_roles(message, role_list, :add)
     end
   end
 
@@ -25,8 +24,10 @@ defmodule Listerine.Commands do
         Message.reply(message, "Usage: `unstudy [course, ..]`")
       _ ->
         roles = String.upcase(roles)
-        role_list = String.split(roles, " ")
-        Listerine.Channels.role_list(message, role_list, :rm)
+        role_list = 
+          String.upcase(roles)
+          |> String.split(" ")
+        Listerine.Channels.manage_roles(message, role_list, :rm)
     end
   end
 

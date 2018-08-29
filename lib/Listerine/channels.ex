@@ -166,14 +166,16 @@ defmodule Listerine.Channels do
     |> prepend.(remove_course_channels(others))
   end
   
-  def role_list(_message, [], _mode) do
+  def manage_roles(_message, [], _mode) do
   end 
 
-  def role_list(message, [name | tail], mode) do
+  def manage_roles(message, [name | tail], mode) do
     guild = message.channel.guild_id
     member = Guild.get_member(guild, message.author.id)
     roles = get_courses()
-    roles = Listerine.Helpers.merge(roles["1"], roles["2"], roles["3"])
+    roles = 
+      Map.merge(roles["1"], roles["2"])
+      |> Map.merge(roles["3"])
     if roles[name] != nil do
       case mode do
         :add ->
@@ -184,6 +186,6 @@ defmodule Listerine.Channels do
     else
       Message.reply(message, "Role #{name} does not exist")
     end
-    role_list(message, tail, mode)
+    manage_roles(message, tail, mode)
   end
 end
