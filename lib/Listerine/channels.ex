@@ -208,7 +208,7 @@ defmodule Listerine.Channels do
                 nil
             end
         end
-      else
+    else
         Message.reply(message, "Role #{name} does not exist")
         nil
     end
