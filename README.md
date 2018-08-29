@@ -1,21 +1,26 @@
 # Listerine
 
-TODO: Discord BOT
+## Things to review before releasing
+
+ * Check if the `@permit` tags restrict permissions correctly.
 
 ## Getting Started
 
 Rename [config.exs.example](config/config.exs.example) to `config.exs` and insert your Token.
 
+#### Get the dependencies
 ```shell
 mix deps.get
 ```
 
+#### Compile
 ```shell
 mix compile
 ```
 
+#### Run
 ```shell
-iex -S mix
+mix run --no-halt
 ```
 
 ## License
