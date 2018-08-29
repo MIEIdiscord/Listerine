@@ -9,8 +9,25 @@ defmodule Listerine.Commands do
   end
 
   command study(roles) do
-    role_list = String.split(roles, " ")
-    Listerine.Helpers.add_role_list(message, role_list)
+    case roles do
+      [] ->
+        Message.reply(message, "Usage: `study [course, ...]`")
+      _ ->
+        roles = String.upcase(roles)
+        role_list = String.split(roles, " ")
+        Listerine.Channels.role_list(message, role_list, :add)
+    end
+  end
+
+  command unstudy(roles) do
+    case roles do
+      [] ->
+        Message.reply(message, "Usage: `unstudy [course, ..]`")
+      _ ->
+        roles = String.upcase(roles)
+        role_list = String.split(roles, " ")
+        Listerine.Channels.role_list(message, role_list, :rm)
+    end
   end
 
   # REVIEW: See if this bug has been patched
