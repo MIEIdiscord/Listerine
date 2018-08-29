@@ -100,6 +100,6 @@ defmodule Listerine.Commands do
 
     Message.reply(message, embed: embed)
   end
-
+  
   defp unwords(words), do: Enum.reduce(words, fn x, a -> a <> " " <> x end)
 end
