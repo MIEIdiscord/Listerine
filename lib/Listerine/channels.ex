@@ -38,7 +38,7 @@ defmodule Listerine.Channels do
   def generateCoursesEmbedField(year) do
     %{
       name: Integer.to_string(year) <> "º ano",
-      value: getCoursesYear(year),
+      value: get_courses_year(year),
       inline: true
     }
   end
@@ -46,9 +46,9 @@ defmodule Listerine.Channels do
   @doc """
   Generates a string with all the courses in a year separated by a newline
   """
-  def getCoursesYear(year) do
-    coursesYearArr = Map.keys(Map.get(get_courses(), Integer.to_string(year)))
-    Enum.join(coursesYearArr, "\n")
+  def get_courses_year(year) do
+    courses_year_arr = Map.keys(Map.get(get_courses(), Integer.to_string(year)))
+    Enum.join(courses_year_arr, "\n")
   end
 
   @doc """
