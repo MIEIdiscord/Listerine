@@ -12,9 +12,21 @@ defmodule Listerine.Commands do
     case roles do
       [] ->
         Message.reply(message, "Usage: `study [course, ...]`")
+
       _ ->
-        role_list = String.split(String.upcase(roles), " ")
-        Listerine.Channels.manage_roles(message, role_list, :add)
+        role_list =
+          String.upcase(roles)
+          |> String.split(" ")
+
+        a = Listerine.Channels.manage_roles(message, role_list, :add)
+
+        case a do
+          [] ->
+            Message.reply(message, "No roles were added")
+
+          _ ->
+            Message.reply(message, "Studying: #{unwords(a)}")
+        end
     end
   end
 
@@ -22,12 +34,21 @@ defmodule Listerine.Commands do
     case roles do
       [] ->
         Message.reply(message, "Usage: `unstudy [course, ..]`")
+
       _ ->
-        roles = String.upcase(roles)
-        role_list = 
+        role_list =
           String.upcase(roles)
           |> String.split(" ")
-        Listerine.Channels.manage_roles(message, role_list, :rm)
+
+        a = Listerine.Channels.manage_roles(message, role_list, :rm)
+
+        case a do
+          [] ->
+            Message.reply(message, "No roles were removed")
+
+          _ ->
+            Message.reply(message, "Stoped studiyng #{unwords(a)}")
+        end
     end
   end
 
@@ -66,26 +87,19 @@ defmodule Listerine.Commands do
   end
 
   command mancourses() do
-    embed =
-    %{
+    embed = %{
       title: "Informação sobre as cadeiras disponíveis",
       color: 0xFF0000,
       footer: %{
         text: "Qualquer dúvida sobre o bot podes usar `$help` para saberes o que podes fazer."
       },
-      description:
-        "`$study CADEIRA` junta-te às salas das cadeiras
+      description: "`$study CADEIRA` junta-te às salas das cadeiras
          `$study 1ano` junta-te a todas as cadeiras de um ano",
-      fields:
-      (
-        for year <- 1..3, do:
-          Listerine.Channels.generateCoursesEmbedField(year)
-      )
+      fields: for(year <- 1..3, do: Listerine.Channels.generateCoursesEmbedField(year))
     }
 
-    Message.reply message, embed: embed
+    Message.reply(message, embed: embed)
   end
-
 
   defp unwords(words), do: Enum.reduce(words, fn x, a -> a <> " " <> x end)
 end

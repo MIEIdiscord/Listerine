@@ -37,7 +37,7 @@ defmodule Listerine.Channels do
   """
   def generateCoursesEmbedField(year) do
     %{
-      name: (Integer.to_string year) <> "º ano",
+      name: Integer.to_string(year) <> "º ano",
       value: getCoursesYear(year),
       inline: true
     }
@@ -47,8 +47,8 @@ defmodule Listerine.Channels do
   Generates a string with all the courses in a year separated by a newline
   """
   def getCoursesYear(year) do
-    coursesYearArr = Map.keys Map.get get_courses(), Integer.to_string year
-    Enum.join coursesYearArr, "\n"
+    coursesYearArr = Map.keys(Map.get(get_courses(), Integer.to_string(year)))
+    Enum.join(coursesYearArr, "\n")
   end
 
   @doc """
@@ -129,8 +129,10 @@ defmodule Listerine.Channels do
         removed =
           map
           |> Map.values()
-          |> Enum.reduce([],
-            fn x, ac -> ac ++ (Map.take(x, valid_courses) |> Map.values()) end)
+          |> Enum.reduce(
+            [],
+            fn x, ac -> ac ++ (Map.take(x, valid_courses) |> Map.values()) end
+          )
           |> remove_course_channels()
 
         new_map =
@@ -157,35 +159,58 @@ defmodule Listerine.Channels do
     prepend = fn x, l -> [x | l] end
 
     course["channels"]
-    |> Enum.reduce([],
-      fn c, ac -> [Channel.get(c) |> do_or_nil.(&Channel.delete/1) | ac] end)
+    |> Enum.reduce(
+      [],
+      fn c, ac -> [Channel.get(c) |> do_or_nil.(&Channel.delete/1) | ac] end
+    )
     |> (fn
           nil -> nil
           a -> Enum.find(a, fn x -> x.type == 4 end).name
         end).()
     |> prepend.(remove_course_channels(others))
   end
-  
+
   def manage_roles(_message, [], _mode) do
-  end 
+    []
+  end
 
   def manage_roles(message, [name | tail], mode) do
+    modified = []
     guild = message.channel.guild_id
     member = Guild.get_member(guild, message.author.id)
     roles = get_courses()
-    roles = 
+
+    roles =
       Map.merge(roles["1"], roles["2"])
       |> Map.merge(roles["3"])
-    if roles[name] != nil do
-      case mode do
-        :add ->
-          Member.add_role(member, roles[name]["role"])
-        :rm ->
-          Member.remove_role(member, roles[name]["role"])
+
+    modified =
+      if roles[name] != nil do
+        case mode do
+          :add ->
+            case Member.add_role(member, roles[name]["role"]) do
+              :ok ->
+                [name]
+
+              _ ->
+                []
+            end
+
+          :rm ->
+            case Member.remove_role(member, roles[name]["role"]) do
+              :ok ->
+                [name]
+
+              _ ->
+                []
+            end
+        end
+      else
+        Message.reply(message, "Role #{name} does not exist")
+        []
       end
-    else
-      Message.reply(message, "Role #{name} does not exist")
-    end
-    manage_roles(message, tail, mode)
+
+    modified = modified ++ manage_roles(message, tail, mode)
+    modified
   end
 end
