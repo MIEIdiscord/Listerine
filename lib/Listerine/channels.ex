@@ -46,7 +46,7 @@ defmodule Listerine.Channels do
   @doc """
   Generates a string with all the courses in a year separated by a newline
   """
-  def get_courses_year(year) do
+  defp get_courses_year(year) do
     courses_year_arr = Map.keys(Map.get(get_courses(), Integer.to_string(year)))
     Enum.join(courses_year_arr, "\n")
   end
