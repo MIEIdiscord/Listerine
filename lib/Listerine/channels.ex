@@ -169,27 +169,48 @@ defmodule Listerine.Channels do
         end).()
     |> prepend.(remove_course_channels(others))
   end
-  
+
   def manage_roles(_message, [], _mode) do
-  end 
+    []
+  end
 
   def manage_roles(message, [name | tail], mode) do
+    modified = []
     guild = message.channel.guild_id
     member = Guild.get_member(guild, message.author.id)
     roles = get_courses()
-    roles = 
+
+    roles =
       Map.merge(roles["1"], roles["2"])
       |> Map.merge(roles["3"])
-    if roles[name] != nil do
-      case mode do
-        :add ->
-          Member.add_role(member, roles[name]["role"])
-        :rm ->
-          Member.remove_role(member, roles[name]["role"])
+
+    modified =
+      if roles[name] != nil do
+        case mode do
+          :add ->
+            case Member.add_role(member, roles[name]["role"]) do
+              :ok ->
+                [name]
+
+              _ ->
+                []
+            end
+
+          :rm ->
+            case Member.remove_role(member, roles[name]["role"]) do
+              :ok ->
+                [name]
+
+              _ ->
+                []
+            end
+        end
+      else
+        Message.reply(message, "Role #{name} does not exist")
+        []
       end
-    else
-      Message.reply(message, "Role #{name} does not exist")
-    end
-    manage_roles(message, tail, mode)
+
+    modified = modified ++ manage_roles(message, tail, mode)
+    modified
   end
 end
