@@ -18,14 +18,22 @@ defmodule Listerine.Commands do
           String.upcase(roles)
           |> String.split(" ")
 
+<<<<<<< HEAD
         a = elem(Listerine.Channels.manage_roles(message, role_list, :add), 1)
+=======
+        a = Listerine.Channels.manage_roles(message, role_list, :add)
+>>>>>>> Add a message with the roles added/removed when using study/unstudy command
 
         case a do
           [] ->
             Message.reply(message, "No roles were added")
 
           _ ->
+<<<<<<< HEAD
             Message.reply(message, "Studying: #{Listerine.Helpers.unwords(a)}")
+=======
+            Message.reply(message, "Studying: #{unwords(a)}")
+>>>>>>> Add a message with the roles added/removed when using study/unstudy command
         end
     end
   end
@@ -35,19 +43,31 @@ defmodule Listerine.Commands do
       [] ->
         Message.reply(message, "Usage: `unstudy [course, ..]`")
 
+<<<<<<< HEAD
       _ ->  
+=======
+      _ ->
+>>>>>>> Add a message with the roles added/removed when using study/unstudy command
         role_list =
           String.upcase(roles)
           |> String.split(" ")
 
+<<<<<<< HEAD
         a = elem(Listerine.Channels.manage_roles(message, role_list, :rm), 1)
+=======
+        a = Listerine.Channels.manage_roles(message, role_list, :rm)
+>>>>>>> Add a message with the roles added/removed when using study/unstudy command
 
         case a do
           [] ->
             Message.reply(message, "No roles were removed")
 
           _ ->
+<<<<<<< HEAD
             Message.reply(message, "Stoped studiyng #{Listerine.Helpers.unwords(a)}")
+=======
+            Message.reply(message, "Stoped studiyng #{unwords(a)}")
+>>>>>>> Add a message with the roles added/removed when using study/unstudy command
         end
     end
   end
@@ -101,6 +121,7 @@ defmodule Listerine.Commands do
     Message.reply(message, embed: embed)
   end
 
+<<<<<<< HEAD
   command dropbox() do
     text =
       "**Este é o link para o** <:dropbox:419483815912800256>**do curso** -> http://bit.ly/dropboxmiei"
@@ -114,4 +135,7 @@ defmodule Listerine.Commands do
 
     Message.reply(message, text)
   end
+=======
+  defp unwords(words), do: Enum.reduce(words, fn x, a -> a <> " " <> x end)
+>>>>>>> Add a message with the roles added/removed when using study/unstudy command
 end
