@@ -33,7 +33,7 @@ defmodule Listerine.Channels do
   end
 
   @doc """
-  Generates array with all available courses
+  Generates an array with embed fields that contain all available courses.
   """
   def generate_courses_embed_fields() do
     possible_embed_fiels =
@@ -51,7 +51,7 @@ defmodule Listerine.Channels do
     }
   end
 
-  # Generates a string with all the courses in a year separated by a newline
+  # Generates a string with all the courses in a year separated by a newline.
   defp get_courses_year(year) do
     courses_year_arr = Map.keys(Map.get(get_courses(), year))
     Enum.join(courses_year_arr, "\n")
