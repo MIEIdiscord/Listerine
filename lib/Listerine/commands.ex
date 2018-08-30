@@ -100,6 +100,7 @@ defmodule Listerine.Commands do
 
     Message.reply(message, embed: embed)
   end
+
   command dropbox() do
     text =
       "**Este é o link para o** <:dropbox:419483815912800256>**do curso** -> http://bit.ly/dropboxmiei"
@@ -112,5 +113,4 @@ defmodule Listerine.Commands do
       "**As datas do teste encontram-se neste** <:googlecalendar:419486445720567809> -> http://bit.ly/calendariomiei"
 
     Message.reply(message, text)
-  end
 end
