@@ -171,7 +171,7 @@ defmodule Listerine.Channels do
   end
 
   def manage_roles(_message, [], _mode) do
-    []
+    {:ok, []} 
   end
 
   def manage_roles(message, [name | tail], mode) do
@@ -183,33 +183,34 @@ defmodule Listerine.Channels do
       Map.merge(roles["1"], roles["2"])
       |> Map.merge(roles["3"])
 
-    modified =
-      if roles[name] != nil do
+    modified = List.delete([change_roles(message, member, roles, name, mode) | elem(manage_roles(message, tail, mode), 1)], nil)
+    {:ok, modified}
+  end
+
+  defp change_roles(message, member, roles, name, mode) do
+    if roles[name] != nil do
         case mode do
           :add ->
             case Member.add_role(member, roles[name]["role"]) do
               :ok ->
-                [name]
+                name
 
               _ ->
-                []
+                nil
             end
 
           :rm ->
             case Member.remove_role(member, roles[name]["role"]) do
               :ok ->
-                [name]
+                name
 
               _ ->
-                []
+                nil
             end
         end
       else
         Message.reply(message, "Role #{name} does not exist")
-        []
-      end
-
-    modified = [modified | manage_roles(message, tail, mode)]
-    modified
+        nil
+    end
   end
 end
