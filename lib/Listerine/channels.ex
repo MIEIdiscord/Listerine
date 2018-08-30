@@ -209,7 +209,7 @@ defmodule Listerine.Channels do
         []
       end
 
-    modified = modified ++ manage_roles(message, tail, mode)
+    modified = [modified | manage_roles(message, tail, mode)]
     modified
   end
 end
