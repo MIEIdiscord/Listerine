@@ -35,7 +35,7 @@ defmodule Listerine.Channels do
   @doc """
   Generates a Formated field to use in embed with all courses in the given year.
   """
-  def generateCoursesEmbedField(year) do
+  def generate_courses_embed_field(year) do
     %{
       name: Integer.to_string(year) <> "º ano",
       value: get_courses_year(year),
@@ -175,7 +175,6 @@ defmodule Listerine.Channels do
   end
 
   def manage_roles(message, [name | tail], mode) do
-    modified = []
     guild = message.channel.guild_id
     member = Guild.get_member(guild, message.author.id)
     roles = get_courses()
