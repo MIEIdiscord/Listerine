@@ -18,7 +18,7 @@ defmodule Listerine.Commands do
           String.upcase(roles)
           |> String.split(" ")
 
-        a = Listerine.Channels.manage_roles(message, role_list, :add)
+        a = elem(Listerine.Channels.manage_roles(message, role_list, :add), 1)
 
         case a do
           [] ->
@@ -40,7 +40,7 @@ defmodule Listerine.Commands do
           String.upcase(roles)
           |> String.split(" ")
 
-        a = Listerine.Channels.manage_roles(message, role_list, :rm)
+        a = elem(Listerine.Channels.manage_roles(message, role_list, :rm), 1)
 
         case a do
           [] ->
