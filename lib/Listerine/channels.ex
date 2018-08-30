@@ -175,7 +175,6 @@ defmodule Listerine.Channels do
   end
 
   def manage_roles(message, [name | tail], mode) do
-    modified = []
     guild = message.channel.guild_id
     member = Guild.get_member(guild, message.author.id)
     roles = get_courses()
