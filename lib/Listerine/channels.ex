@@ -197,7 +197,6 @@ defmodule Listerine.Channels do
               _ ->
                 nil
             end
-
           :rm ->
             case Member.remove_role(member, roles[name]["role"]) do
               :ok ->
