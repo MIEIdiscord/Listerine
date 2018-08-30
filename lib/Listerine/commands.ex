@@ -61,6 +61,16 @@ defmodule Listerine.Commands do
 
     Message.reply(message, embed: embed)
   end
-  
+
+  command dropbox() do
+    text = "**Este é o link para o** <:dropbox:419483815912800256>**do curso** -> http://bit.ly/dropboxmiei"
+    Message.reply(message, text)
+  end
+
+  command datatestes() do
+    text = "**As datas do teste encontram-se neste** <:googlecalendar:419486445720567809> -> http://bit.ly/calendariomiei"
+    Message.reply(message, text)
+  end
+
   defp unwords(words), do: Enum.reduce(words, fn x, a -> a <> " " <> x end)
 end
