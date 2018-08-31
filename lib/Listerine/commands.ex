@@ -56,7 +56,7 @@ defmodule Listerine.Commands do
       },
       description: "`$study CADEIRA` junta-te às salas das cadeiras
          `$study 1ano` junta-te a todas as cadeiras de um ano",
-      fields: for(year <- 1..3, do: Listerine.Channels.generate_courses_embed_field(year))
+      fields: Listerine.Channels.generate_courses_embed_fields()
     }
 
     Message.reply(message, embed: embed)

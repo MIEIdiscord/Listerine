@@ -33,21 +33,27 @@ defmodule Listerine.Channels do
   end
 
   @doc """
-  Generates a Formated field to use in embed with all courses in the given year.
+  Generates an array with embed fields that contain all available courses.
   """
-  def generate_courses_embed_field(year) do
+  def generate_courses_embed_fields() do
+    possible_embed_fiels =
+      for(year <- Map.keys(get_courses()), do: generate_courses_embed_field(year))
+
+    Enum.filter(possible_embed_fiels, fn x -> Map.get(x, :value) != "" end)
+  end
+
+  # Generates a Formated field to use in embed with all courses in the given year.
+  defp generate_courses_embed_field(year) do
     %{
-      name: Integer.to_string(year) <> "º ano",
+      name: year <> "º ano",
       value: get_courses_year(year),
       inline: true
     }
   end
 
-  @doc """
-  Generates a string with all the courses in a year separated by a newline
-  """
+  # Generates a string with all the courses in a year separated by a newline.
   defp get_courses_year(year) do
-    courses_year_arr = Map.keys(Map.get(get_courses(), Integer.to_string(year)))
+    courses_year_arr = Map.keys(Map.get(get_courses(), year))
     Enum.join(courses_year_arr, "\n")
   end
 
