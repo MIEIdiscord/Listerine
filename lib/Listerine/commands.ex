@@ -113,4 +113,5 @@ defmodule Listerine.Commands do
       "**As datas do teste encontram-se neste** <:googlecalendar:419486445720567809> -> http://bit.ly/calendariomiei"
 
     Message.reply(message, text)
+  end
 end
