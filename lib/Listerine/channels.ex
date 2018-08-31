@@ -170,45 +170,57 @@ defmodule Listerine.Channels do
     |> prepend.(remove_course_channels(others))
   end
 
-  def manage_roles(_message, [], _mode) do
-    {:ok, []} 
+  def add_role(_message, []) do
+    {:ok, []}
   end
 
-  def manage_roles(message, [name | tail], mode) do
+  def add_role(message, [name | tail]) do
     guild = message.channel.guild_id
     member = Guild.get_member(guild, message.author.id)
     roles = get_courses()
-    roles =
+    roles = 
       Map.merge(roles["1"], roles["2"])
       |> Map.merge(roles["3"])
+    modified =
+      if roles[name] != nil do
+        case Member.add_role(member, roles[name]["role"]) do
+          :ok ->
+            [name | elem(add_role(message, tail), 1)]
 
-    modified = List.delete([change_roles(message, member, roles, name, mode) | elem(manage_roles(message, tail, mode), 1)], nil)
+          _ ->
+            elem(add_role(message, tail), 1)
+        end
+      else
+        Message.reply(message, "Role #{name} does not exist")
+        elem(add_role(message, tail), 1)
+      end
     {:ok, modified}
   end
 
-  defp change_roles(message, member, roles, name, mode) do
-    if roles[name] != nil do
-        case mode do
-          :add ->
-            case Member.add_role(member, roles[name]["role"]) do
-              :ok ->
-                name
+  def rm_role(_message, []) do
+    {:ok, []}
+  end
 
-              _ ->
-                nil
-            end
-          :rm ->
-            case Member.remove_role(member, roles[name]["role"]) do
-              :ok ->
-                name
+  def rm_role(message, [name | tail]) do
+    guild = message.channel.guild_id
+    member = Guild.get_member(guild, message.author.id)
+    roles = get_courses()
+    roles = 
+      Map.merge(roles["1"], roles["2"])
+      |> Map.merge(roles["3"])
+    modified =
+      if roles[name] != nil do
+        case Member.remove_role(member, roles[name]["role"]) do
+          :ok ->
+            [name | elem(rm_role(message, tail), 1)]
 
-              _ ->
-                nil
-            end
+          _ ->
+            elem(rm_role(message, tail), 1)
         end
     else
         Message.reply(message, "Role #{name} does not exist")
-        nil
-    end
+        elem(rm_role(message, tail), 1)
+      end
+    {:ok, modified}
   end
 end
