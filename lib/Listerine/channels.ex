@@ -217,7 +217,7 @@ defmodule Listerine.Channels do
           _ ->
             elem(rm_role(message, tail), 1)
         end
-    else
+      else
         Message.reply(message, "Role #{name} does not exist")
         elem(rm_role(message, tail), 1)
       end
