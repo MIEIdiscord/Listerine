@@ -53,7 +53,7 @@ defmodule Listerine.Commands do
   end
 
   # REVIEW: See if this bug has been patched
-  @permit :BAN_MEMBERS
+  @permit :MANAGE_CHANNELS
   command mkcourses(text) do
     [y | cl] =
       text
@@ -73,7 +73,7 @@ defmodule Listerine.Commands do
     end
   end
 
-  @permit :BAN_MEMBERS
+  @permit :MANAGE_CHANNELS
   command rmcourses(text) do
     text =
       String.split(text, " ")
