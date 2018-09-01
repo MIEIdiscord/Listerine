@@ -6,6 +6,7 @@ defmodule Listerine.Consumer do
     embed = %{
       title: "Bem vindo ao servidor de MIEI!",
       color: 0xFF0000,
+      thumbnail: %{url: Listerine.Helpers.get_guild_icon_url(Guild.get(member.guild_id))},
       footer: %{
         text: "Qualquer dúvida sobre o bot podes usar `$help` para saberes o que podes fazer."
       },
