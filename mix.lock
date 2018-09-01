@@ -2,7 +2,7 @@
   "certifi": {:hex, :certifi, "2.3.1", "d0f424232390bf47d82da8478022301c561cf6445b5b5fb6a84d49a9e76d2639", [:rebar3], [{:parse_trans, "3.2.0", [hex: :parse_trans, repo: "hexpm", optional: false]}], "hexpm"},
   "chacha20": {:hex, :chacha20, "1.0.1", "4f5eb7ec715b63f90b5f152b91cc490382753ad08827960017c0660c8e30f613", [:mix], [], "hexpm"},
   "coxir": {:git, "https://github.com/satom99/coxir.git", "6708dd62daef45b36bcfe83a350f05b63bb01f6f", []},
-  "coxir_commander": {:git, "https://github.com/satom99/coxir_commander.git", "f0cbdada142f48b58919ffb776e96debf49dbbda", []},
+  "coxir_commander": {:git, "https://github.com/satom99/coxir_commander.git", "fc3b7db6c028af940362a4ddbbe05c8dc4ecdab0", []},
   "curve25519": {:hex, :curve25519, "1.0.2", "1dd89550518937ed1c8196389a3974b3b2fb5f016fa0bd0601e8cdcb44336bf2", [:mix], [], "hexpm"},
   "ed25519": {:hex, :ed25519, "1.3.0", "de3b340cb15eeb68c5ee4ab6834b2e9b4be8eba113fc24f58fe0d5022e3b4462", [:mix], [], "hexpm"},
   "equivalex": {:hex, :equivalex, "1.0.1", "19a28351e60272a19a4ba05c12f1f1d87fe6146d21531ec7d0783e1bc6a8179c", [:mix], [], "hexpm"},
