@@ -9,8 +9,47 @@ defmodule Listerine.Commands do
   end
 
   command study(roles) do
-    role_list = String.split(roles, " ")
-    Listerine.Helpers.add_role_list(message, role_list)
+    case roles do
+      [] ->
+        Message.reply(message, "Usage: `study [course, ...]`")
+
+      _ ->
+        role_list =
+          String.upcase(roles)
+          |> String.split(" ")
+
+        a = elem(Listerine.Channels.add_role(message, role_list), 1)
+
+        case a do
+          [] ->
+            Message.reply(message, "No roles were added")
+
+          _ ->
+            Message.reply(message, "Studying: #{Listerine.Helpers.unwords(a)}")
+        end
+    end
+  end
+
+  command unstudy(roles) do
+    case roles do
+      [] ->
+        Message.reply(message, "Usage: `unstudy [course, ..]`")
+
+      _ ->
+        role_list =
+          String.upcase(roles)
+          |> String.split(" ")
+
+        a = elem(Listerine.Channels.rm_role(message, role_list), 1)
+
+        case a do
+          [] ->
+            Message.reply(message, "No roles were removed")
+
+          _ ->
+            Message.reply(message, "Stoped studiyng #{Listerine.Helpers.unwords(a)}")
+        end
+    end
   end
 
   # REVIEW: See if this bug has been patched
@@ -26,7 +65,7 @@ defmodule Listerine.Commands do
       y in ["1", "2", "3"] ->
         case Listerine.Channels.add_courses(message.guild, y, cl) do
           [] -> Message.reply(message, "Didn't add any channels")
-          cl -> Message.reply(message, "Added: #{unwords(cl)}")
+          cl -> Message.reply(message, "Added: #{Listerine.Helpers.unwords(cl)}")
         end
 
       true ->
@@ -43,7 +82,7 @@ defmodule Listerine.Commands do
 
     case Listerine.Channels.remove_courses(text) do
       [] -> Message.reply(message, "Didn't remove any channels")
-      cl -> Message.reply(message, "Removed: #{unwords(cl)}")
+      cl -> Message.reply(message, "Removed: #{Listerine.Helpers.unwords(cl)}")
     end
   end
 
@@ -75,6 +114,4 @@ defmodule Listerine.Commands do
 
     Message.reply(message, text)
   end
-
-  defp unwords(words), do: Enum.reduce(words, fn x, a -> a <> " " <> x end)
 end
