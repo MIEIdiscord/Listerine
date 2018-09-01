@@ -20,4 +20,15 @@ defmodule Listerine.Consumer do
 
     {:ok, state}
   end
+
+  def handle_event({:READY, _user}, state) do
+    game = %{
+      type: 0,
+      name: "$help"
+    }
+
+    Gateway.set_status("online", game)
+
+    {:ok, state}
+  end
 end
