@@ -1,9 +1,5 @@
 # Listerine
 
-## Things to review before releasing
-
- * Check if the `@permit` tags restrict permissions correctly.
-
 ## Getting Started
 
 Rename [config.exs.example](config/config.exs.example) to `config.exs` and insert your Token.
