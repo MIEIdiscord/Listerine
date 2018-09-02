@@ -8,6 +8,7 @@ defmodule Listerine.Commands do
     Message.reply(message, "pong!")
   end
 
+  @description "Adiciona-te aos channels das cadeiras."
   command study(roles) do
     role_list = Listerine.Helpers.upcase_words(roles)
 
@@ -17,6 +18,7 @@ defmodule Listerine.Commands do
     end
   end
 
+  @description "Remove-te dos channels das cadeiras."
   command unstudy(roles) do
     role_list = Listerine.Helpers.upcase_words(roles)
 
@@ -52,6 +54,7 @@ defmodule Listerine.Commands do
     end
   end
 
+  @description "Apresenta informação sobre como aceder aos channels das cadeiras"
   command mancourses() do
     embed = %{
       title: "Informação sobre as cadeiras disponíveis",
@@ -67,6 +70,7 @@ defmodule Listerine.Commands do
     Message.reply(message, embed: embed)
   end
 
+  @description "Apresenta o link para a dropbox do curso."
   command dropbox() do
     text =
       "**Este é o link para o** <:dropbox:419483815912800256>**do curso** -> http://bit.ly/dropboxmiei"
@@ -74,10 +78,25 @@ defmodule Listerine.Commands do
     Message.reply(message, text)
   end
 
+  @description "Apresenta o link para o calendario de testes."
   command datatestes() do
     text =
       "**As datas do teste encontram-se neste** <:googlecalendar:419486445720567809> -> http://bit.ly/calendariomiei"
 
     Message.reply(message, text)
+  end
+
+  @description "Apresenta esta mensagem de ajuda."
+  command help() do
+    embed = %{
+      title: "Commands",
+      color: 0xFF0000,
+      fields:
+        @commands
+        |> Enum.filter(fn {_, _, _, desc, _} -> desc != :"" end)
+        |> Enum.map(fn {_, name, _, desc, _} -> %{name: name, value: desc, inline: true} end)
+    }
+
+    Message.reply(message, embed: embed)
   end
 end
