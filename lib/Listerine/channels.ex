@@ -193,13 +193,12 @@ defmodule Listerine.Channels do
         roles = Enum.reduce(Map.keys(roles), %{}, fn x, acc -> Map.merge(acc, roles[x]) end)
 
         Enum.filter(courses, fn x -> x in Map.keys(roles) end)
-        |> Enum.map(fn x ->
+        |> Enum.reduce([], fn x, acc ->
           case Member.add_role(member, roles[x]["role"]) do
-            :ok -> x
-            _ -> "delet_this"
+            :ok -> [x | acc]
+            _ -> acc
           end
         end)
-        |> Enum.filter(fn x -> x != "delet_this" end)
     end
   end
 
@@ -220,13 +219,12 @@ defmodule Listerine.Channels do
         roles = Enum.reduce(Map.keys(roles), %{}, fn x, acc -> Map.merge(acc, roles[x]) end)
 
         Enum.filter(courses, fn x -> x in Map.keys(roles) end)
-        |> Enum.map(fn x ->
+        |> Enum.reduce([], fn x, acc ->
           case Member.remove_role(member, roles[x]["role"]) do
-            :ok -> x
-            _ -> "delet_this"
+            :ok -> [x | acc]
+            _ -> acc
           end
         end)
-        |> Enum.filter(fn x -> x != "delet_this" end)
     end
   end
 end
