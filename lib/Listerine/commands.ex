@@ -9,57 +9,26 @@ defmodule Listerine.Commands do
   end
 
   command study(roles) do
-    case roles do
-      [] ->
-        Message.reply(message, "Usage: `study [course, ...]`")
+    role_list = Listerine.Helpers.upcase_words(roles)
 
-      _ ->
-        role_list =
-          String.upcase(roles)
-          |> String.split(" ")
-
-        a = elem(Listerine.Channels.add_role(message, role_list), 1)
-
-        case a do
-          [] ->
-            Message.reply(message, "No roles were added")
-
-          _ ->
-            Message.reply(message, "Studying: #{Listerine.Helpers.unwords(a)}")
-        end
+    case Listerine.Channels.add_role(message, role_list) do
+      [] -> Message.reply(message, "No roles were added")
+      cl -> Message.reply(message, "Studying: #{Listerine.Helpers.unwords(cl)}")
     end
   end
 
   command unstudy(roles) do
-    case roles do
-      [] ->
-        Message.reply(message, "Usage: `unstudy [course, ..]`")
+    role_list = Listerine.Helpers.upcase_words(roles)
 
-      _ ->
-        role_list =
-          String.upcase(roles)
-          |> String.split(" ")
-
-        a = elem(Listerine.Channels.rm_role(message, role_list), 1)
-
-        case a do
-          [] ->
-            Message.reply(message, "No roles were removed")
-
-          _ ->
-            Message.reply(message, "Stoped studiyng #{Listerine.Helpers.unwords(a)}")
-        end
+    case Listerine.Channels.rm_role(message, role_list) do
+      [] -> Message.reply(message, "No roles were removed")
+      cl -> Message.reply(message, "Stoped studiyng #{Listerine.Helpers.unwords(cl)}")
     end
   end
 
-  # REVIEW: See if this bug has been patched
   @permit :MANAGE_CHANNELS
   command mkcourses(text) do
-    [y | cl] =
-      text
-      |> String.split(" ")
-      |> Enum.filter(fn x -> x != "" end)
-      |> Enum.map(&String.upcase/1)
+    [y | cl] = Listerine.Helpers.upcase_words(text)
 
     cond do
       y in ["1", "2", "3"] ->
@@ -75,12 +44,9 @@ defmodule Listerine.Commands do
 
   @permit :MANAGE_CHANNELS
   command rmcourses(text) do
-    text =
-      String.split(text, " ")
-      |> Enum.filter(fn x -> x != "" end)
-      |> Enum.map(&String.upcase/1)
+    args = Listerine.Helpers.upcase_words(text)
 
-    case Listerine.Channels.remove_courses(text) do
+    case Listerine.Channels.remove_courses(args) do
       [] -> Message.reply(message, "Didn't remove any channels")
       cl -> Message.reply(message, "Removed: #{Listerine.Helpers.unwords(cl)}")
     end

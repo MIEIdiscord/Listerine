@@ -176,63 +176,57 @@ defmodule Listerine.Channels do
     |> prepend.(remove_course_channels(others))
   end
 
-  def add_role(_message, []) do
-    {:ok, []}
-  end
+  @doc """
+  Adds the roles passed in the `courses` list the the author of the `message`.
 
-  def add_role(message, [name | tail]) do
+  Returns a list of added roles
+  """
+  def add_role(message, courses) do
     guild = message.channel.guild_id
     member = Guild.get_member(guild, message.author.id)
-    roles = get_courses()
 
-    roles =
-      Map.merge(roles["1"], roles["2"])
-      |> Map.merge(roles["3"])
+    case get_courses() do
+      nil ->
+        nil
 
-    modified =
-      if roles[name] != nil do
-        case Member.add_role(member, roles[name]["role"]) do
-          :ok ->
-            [name | elem(add_role(message, tail), 1)]
+      roles ->
+        roles = Enum.reduce(Map.keys(roles), %{}, fn x, acc -> Map.merge(acc, roles[x]) end)
 
-          _ ->
-            elem(add_role(message, tail), 1)
-        end
-      else
-        Message.reply(message, "Role #{name} does not exist")
-        elem(add_role(message, tail), 1)
-      end
-
-    {:ok, modified}
+        Enum.filter(courses, fn x -> x in Map.keys(roles) end)
+        |> Enum.map(fn x ->
+          case Member.add_role(member, roles[x]["role"]) do
+            :ok -> x
+            _ -> "delet_this"
+          end
+        end)
+        |> Enum.filter(fn x -> x != "delet_this" end)
+    end
   end
 
-  def rm_role(_message, []) do
-    {:ok, []}
-  end
+  @doc """
+  Removes the roles passed in the `courses` list the the author of the `message`.
 
-  def rm_role(message, [name | tail]) do
+  Returns a list of removed roles
+  """
+  def rm_role(message, courses) do
     guild = message.channel.guild_id
     member = Guild.get_member(guild, message.author.id)
-    roles = get_courses()
 
-    roles =
-      Map.merge(roles["1"], roles["2"])
-      |> Map.merge(roles["3"])
+    case get_courses() do
+      nil ->
+        nil
 
-    modified =
-      if roles[name] != nil do
-        case Member.remove_role(member, roles[name]["role"]) do
-          :ok ->
-            [name | elem(rm_role(message, tail), 1)]
+      roles ->
+        roles = Enum.reduce(Map.keys(roles), %{}, fn x, acc -> Map.merge(acc, roles[x]) end)
 
-          _ ->
-            elem(rm_role(message, tail), 1)
-        end
-      else
-        Message.reply(message, "Role #{name} does not exist")
-        elem(rm_role(message, tail), 1)
-      end
-
-    {:ok, modified}
+        Enum.filter(courses, fn x -> x in Map.keys(roles) end)
+        |> Enum.map(fn x ->
+          case Member.remove_role(member, roles[x]["role"]) do
+            :ok -> x
+            _ -> "delet_this"
+          end
+        end)
+        |> Enum.filter(fn x -> x != "delet_this" end)
+    end
   end
 end
