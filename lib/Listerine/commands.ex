@@ -3,7 +3,7 @@ defmodule Listerine.Commands do
 
   @prefix "$"
   @command_desc [
-    study: "Adiciona-te as salas das cadeiras.",
+    study: "Adiciona-te às salas das cadeiras.",
     unstudy: "Remove-te das salas das cadeiras.",
     mancourses: "Apresenta informação sobre como aceder às salas das cadeiras.",
     dropbox: "Apresenta o link para a dropbox do curso.",
