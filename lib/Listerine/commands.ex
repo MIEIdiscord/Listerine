@@ -86,7 +86,7 @@ defmodule Listerine.Commands do
 
   command help() do
     embed = %{
-      title: "Commands",
+      title: "Comandos:",
       color: 0xFF0000,
       description:
         @command_desc
