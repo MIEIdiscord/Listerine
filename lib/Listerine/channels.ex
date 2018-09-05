@@ -202,6 +202,10 @@ defmodule Listerine.Channels do
     end
   end
 
+  def get_roles_year(year) do
+    Map.keys(get_courses()[year])
+  end
+
   @doc """
   Removes the roles passed in the `courses` list the the author of the `message`.
 
