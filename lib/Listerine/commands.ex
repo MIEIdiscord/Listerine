@@ -5,7 +5,7 @@ defmodule Listerine.Commands do
   @command_desc [
     study: "Adiciona-te as salas das cadeiras.",
     unstudy: "Remove-te das salas das cadeiras.",
-    mancourses: "Apresenta informação sobre como aceder as salas das cadeiras.",
+    mancourses: "Apresenta informação sobre como aceder às salas das cadeiras.",
     dropbox: "Apresenta o link para a dropbox do curso.",
     #    datatestes: "Apresenta o link para o calendario de testes.",
     help: "Apresenta esta mensagem de ajuda."
