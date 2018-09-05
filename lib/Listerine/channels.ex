@@ -179,7 +179,7 @@ defmodule Listerine.Channels do
   @doc """
   Adds the roles passed in the `courses` list the the author of the `message`.
 
-  Returns a list of added roles
+  Returns a list of added roles.
   """
   def add_roles(message, courses) do
     guild = message.channel.guild_id
@@ -209,7 +209,7 @@ defmodule Listerine.Channels do
   @doc """
   Removes the roles passed in the `courses` list the the author of the `message`.
 
-  Returns a list of removed roles
+  Returns a list of removed roles.
   """
   def rm_role(message, courses) do
     guild = message.channel.guild_id
