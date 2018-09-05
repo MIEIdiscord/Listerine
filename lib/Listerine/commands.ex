@@ -11,6 +11,16 @@ defmodule Listerine.Commands do
   command study(roles) do
     role_list = Listerine.Helpers.upcase_words(roles)
 
+    role_list =
+      Enum.map(
+        role_list,
+        fn
+          <<year::binary-size(1), "ANO">> -> Listerine.Channels.get_roles_year(year)
+          x -> x
+        end
+      )
+      |> List.flatten()
+
     case Listerine.Channels.add_roles(message, role_list) do
       [] -> Message.reply(message, "No roles were added")
       cl -> Message.reply(message, "Studying: #{Listerine.Helpers.unwords(cl)}")
