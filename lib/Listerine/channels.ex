@@ -181,7 +181,7 @@ defmodule Listerine.Channels do
 
   Returns a list of added roles
   """
-  def add_role(message, courses) do
+  def add_roles(message, courses) do
     guild = message.channel.guild_id
     member = Guild.get_member(guild, message.author.id)
 
