@@ -2,11 +2,14 @@ defmodule Listerine.Commands do
   use Coxir.Commander
 
   @prefix "$"
-
-  # PING COMMAND
-  command ping do
-    Message.reply(message, "pong!")
-  end
+  @command_desc [
+    study: "Adiciona-te aos channels das cadeiras.",
+    unstudy: "Remove-te dos channels das cadeiras.",
+    mancourses: "Apresenta informação sobre como aceder aos channels das cadeiras.",
+    dropbox: "Apresenta o link para a dropbox do curso.",
+    #    datatestes: "Apresenta o link para o calendario de testes.",
+    help: "Apresenta esta mensagem de ajuda."
+  ]
 
   command study(roles) do
     role_list = Listerine.Helpers.upcase_words(roles)
@@ -84,10 +87,23 @@ defmodule Listerine.Commands do
     Message.reply(message, text)
   end
 
-  command datatestes() do
-    text =
-      "**As datas do teste encontram-se neste** <:googlecalendar:419486445720567809> -> http://bit.ly/calendariomiei"
+  # command datatestes() do
+  # text =
+  #  "**As datas do teste encontram-se neste** <:googlecalendar:419486445720567809> -> http://bit.ly/calendariomiei"
 
-    Message.reply(message, text)
+  # Message.reply(message, text)
+  # end
+
+  command help() do
+    embed = %{
+      title: "Comandos:",
+      color: 0xFF0000,
+      description:
+        @command_desc
+        |> Enum.map(fn {name, desc} -> "**#{name}** -> #{desc}\n" end)
+        |> Enum.reduce("", fn x, acc -> acc <> x end)
+    }
+
+    Message.reply(message, embed: embed)
   end
 end
