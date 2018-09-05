@@ -11,7 +11,7 @@ defmodule Listerine.Commands do
   command study(roles) do
     role_list = Listerine.Helpers.upcase_words(roles)
 
-    case Listerine.Channels.add_role(message, role_list) do
+    case Listerine.Channels.add_roles(message, role_list) do
       [] -> Message.reply(message, "No roles were added")
       cl -> Message.reply(message, "Studying: #{Listerine.Helpers.unwords(cl)}")
     end
