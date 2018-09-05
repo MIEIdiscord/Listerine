@@ -5,9 +5,10 @@ defmodule Listerine.Helpers do
     do: "https://cdn.discordapp.com/icons/" <> guild.id <> "/" <> guild.icon <> ".png"
 
   @doc """
-  Returns the intersection of the two sets
+  Returns the intersection of the two sets.
+  Note: It's right associative.
   """
-  def intersect(a, b), do: a -- (a -- b)
+  def intersect(a, b), do: a -- a -- b
 
   @doc """
   Joins words with separating spaces.
