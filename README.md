@@ -18,6 +18,9 @@ mix compile
 ```shell
 mix run --no-halt
 ```
+## Code of Conduct
+
+Please note we have a [Code of Conduct](CODE_OF_CONDUCT.md), please follow it in all your interactions with the project.
 
 ## License
 
