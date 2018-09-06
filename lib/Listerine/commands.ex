@@ -2,13 +2,52 @@ defmodule Listerine.Commands do
   use Coxir.Commander
 
   @prefix "$"
-  @command_desc [
-    study: "Adiciona-te às salas das cadeiras.",
-    unstudy: "Remove-te das salas das cadeiras.",
-    mancourses: "Apresenta informação sobre como aceder às salas das cadeiras.",
-    dropbox: "Apresenta o link para a dropbox do curso.",
+  @man_pages [
+    study: [
+      description: "Permite a um aluno se juntar as salas das cadeiras",
+      synopse: "`#{@prefix}study [CADEIRA, ...]`",
+      options: :nil,
+      example: "`#{@prefix}study Algebra PI`
+      Adiciona-te aos channels de Algebra e PI.",
+      return_value: "A lista de cadeiras validas a que foste adicionado."
+    ],
+    unstudy: [
+      description: "Permite a um aluno sair das salas das cadeiras",
+      synopse: "`#{@prefix}unstudy [CADEIRA, ...]`",
+      options: :nil,
+      example: "`#{@prefix}unstudy Algebra PI`
+      Remove-te dos channels de Algebra e PI.",
+      return_value: "A lista de cadeiras validas a que foste removido."
+    ],
+    courses: [
+      description: "Permite interagir com as salas das cadeiras",
+      synopse: """
+      ```
+      #{@prefix}courses list
+               mk ano [CADEIRA, ...] (admin)
+               rm [CADEIRA, ...] (admin)
+      ```
+      """,
+      options:
+      """
+      __mk__
+      -> Cria salas das cadeiras especificadas, associadas ao ano expecificado
+      __rm__
+      -> Remove salas das cadeiras especificadas
+      __list__
+      -> Lista as cadeiras disponiveis
+      """,
+      example: :nil,
+      return_value: :nil
+    ],
+    material: [
+      description: "Apresenta o link para a drive do curso.",
+      synopse: "`#{@prefix}drive`",
+      options: :nil,
+      example: :nil,
+      return_value: "O link para a drive do curso"
+    ]
     #    datatestes: "Apresenta o link para o calendario de testes.",
-    help: "Apresenta esta mensagem de ajuda."
   ]
 
   command study(roles) do
@@ -46,7 +85,8 @@ defmodule Listerine.Commands do
   end
 
   @permit :MANAGE_CHANNELS
-  command mkcourses(text) do
+  @space :courses
+  command mk(text) do
     [y | cl] = Listerine.Helpers.upcase_words(text)
 
     cond do
@@ -62,7 +102,8 @@ defmodule Listerine.Commands do
   end
 
   @permit :MANAGE_CHANNELS
-  command rmcourses(text) do
+  @space :courses
+  command rm(text) do
     args = Listerine.Helpers.upcase_words(text)
 
     case Listerine.Channels.remove_courses(args) do
@@ -77,15 +118,16 @@ defmodule Listerine.Commands do
     Message.reply(message, "Channel set")
   end
 
-  command mancourses() do
+  @space :courses
+  command list() do
     if Listerine.Helpers.bot_commands?(message) do
-      embed = %{
-        title: "Informação sobre as cadeiras disponíveis",
-        color: 0xFF0000,
-        footer: %{
-          text: "Qualquer dúvida sobre o bot podes usar `$help` para saberes o que podes fazer."
-        },
-        description: "`$study CADEIRA` junta-te às salas das cadeiras
+    embed = %{
+      title: "Informação sobre as cadeiras disponíveis",
+      color: 0xFF0000,
+      footer: %{
+        text: "Qualquer dúvida sobre o bot podes usar `$help` para saberes o que podes fazer."
+      },
+      description: "`$study CADEIRA` junta-te às salas das cadeiras
          `$study 1ano` junta-te a todas as cadeiras de um ano",
         fields: Listerine.Channels.generate_courses_embed_fields()
       }
@@ -100,32 +142,57 @@ defmodule Listerine.Commands do
     end
   end
 
-  command dropbox() do
+  command material() do
     text =
-      "**Este é o link para o** <:dropbox:419483815912800256>**do curso** -> http://bit.ly/dropboxmiei"
+      "**Este é o link para o material do curso** -> http://bit.ly/materialmiei"
 
     Message.reply(message, text)
   end
 
   # command datatestes() do
   # text =
-  #  "**As datas do teste encontram-se neste** <:googlecalendar:419486445720567809> -> http://bit.ly/calendariomiei"
+  #  "**As datas do teste encontram-se neste calendário** -> http://bit.ly/calendariomiei"
 
   # Message.reply(message, text)
   # end
 
-  command help() do
+  command man(arg) do
     if Listerine.Helpers.bot_commands?(message) do
-      embed = %{
-        title: "Comandos:",
-        color: 0xFF0000,
-        description:
-          @command_desc
-          |> Enum.map(fn {name, desc} -> "**#{name}** -> #{desc}\n" end)
-          |> Enum.reduce("", fn x, acc -> acc <> x end)
-      }
-
-      Message.reply(message, embed: embed)
+    arg = String.downcase(arg)
+    msg = cond do
+      arg === "man" ->
+        %{
+          title: "Comandos:",
+          color: 0x000000,
+          description:
+          @man_pages
+          |> Enum.map(fn {name, cmd} -> "**#{name}** -> #{
+            Enum.find(cmd, fn {a,_} -> a == :description end) |> elem(1)
+          }\n" end)
+          |> Enum.reduce("", fn x, acc -> acc <> x end),
+          footer: %{ text: "$man [comando] para saberes mais sobre algum comando" }
+        }
+        Enum.any?(@man_pages, fn {name, _} -> Atom.to_string(name) == arg end) ->
+        %{
+          title: arg,
+          color: 0x000000,
+          fields: Enum.find(@man_pages, nil, fn {name, _} -> Atom.to_string(name) == arg end)
+          |> elem(1)
+          |> Enum.filter(fn {_, text} -> text != :nil end)
+          |> Enum.map(fn {section, text} -> %{
+            name: section |> Atom.to_string() |> String.upcase(),
+            value: text,
+            inline: false
+          } end)
+        }
+      true ->
+        %{
+          title: "No manual entry for #{arg}",
+          color: 0xFF0000,
+          description: "Run $man man to get a list of avalable commands"
+        }
+    end
+    Message.reply(message, embed: msg)
     else
       Channel.send_message(
         Channel.get(Listerine.Helpers.get_bot_commands_id()),
