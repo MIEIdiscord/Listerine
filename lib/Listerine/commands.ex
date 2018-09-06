@@ -12,7 +12,7 @@ defmodule Listerine.Commands do
   ]
 
   command study(roles) do
-    role_list = Listerine.Helpers.upcase_words(roles) |> Listerine.Helpers.role_list_flatten()
+    role_list = Listerine.Helpers.upcase_words(roles) |> Listerine.Helpers.roles_per_year()
 
     case Listerine.Channels.add_roles(message, role_list) do
       [] -> Message.reply(message, "No roles were added")
@@ -21,7 +21,7 @@ defmodule Listerine.Commands do
   end
 
   command unstudy(roles) do
-    role_list = Listerine.Helpers.upcase_words(roles) |> Listerine.Helpers.role_list_flatten()
+    role_list = Listerine.Helpers.upcase_words(roles) |> Listerine.Helpers.roles_per_year()
 
     case Listerine.Channels.rm_role(message, role_list) do
       [] -> Message.reply(message, "No roles were removed")

@@ -4,7 +4,7 @@ defmodule Listerine.Helpers do
   def get_guild_icon_url(guild),
     do: "https://cdn.discordapp.com/icons/" <> guild.id <> "/" <> guild.icon <> ".png"
 
-  def role_list_flatten(role_list) do
+  def roles_per_year(role_list) do
     Enum.map(
       role_list,
       fn
