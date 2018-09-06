@@ -4,6 +4,17 @@ defmodule Listerine.Helpers do
   def get_guild_icon_url(guild),
     do: "https://cdn.discordapp.com/icons/" <> guild.id <> "/" <> guild.icon <> ".png"
 
+  def roles_per_year(role_list) do
+    Enum.map(
+      role_list,
+      fn
+        <<year::binary-size(1), "ANO">> -> Listerine.Channels.get_roles_year(year)
+        x -> x
+      end
+    )
+    |> List.flatten()
+  end
+
   @doc """
   Returns the intersection of the two sets.
   Note: It's right associative.

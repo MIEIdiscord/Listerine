@@ -103,10 +103,11 @@ defmodule Listerine.Channels do
 
     cat = Guild.create_channel(guild, %{name: course, type: 4, permission_overwrites: ow})
     ch1 = Guild.create_channel(guild, %{name: "duvidas", type: 0, parent_id: cat.id})
+    ch2 = Guild.create_channel(guild, %{name: "anexos", type: 0, parent_id: cat.id})
 
     Map.put(create_course_channels(guild, others), cat.name, %{
       "role" => role.id,
-      "channels" => [cat.id, ch1.id]
+      "channels" => [cat.id, ch1.id, ch2.id]
     })
   end
 
