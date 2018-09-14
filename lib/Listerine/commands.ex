@@ -12,20 +12,24 @@ defmodule Listerine.Commands do
   ]
 
   command study(roles) do
-    role_list = Listerine.Helpers.upcase_words(roles) |> Listerine.Helpers.roles_per_year()
+    if Listerine.Helpers.bot_commands?(message) do
+      role_list = Listerine.Helpers.upcase_words(roles) |> Listerine.Helpers.roles_per_year()
 
-    case Listerine.Channels.add_roles(message, role_list) do
-      [] -> Message.reply(message, "No roles were added")
-      cl -> Message.reply(message, "Studying: #{Listerine.Helpers.unwords(cl)}")
+      case Listerine.Channels.add_roles(message, role_list) do
+        [] -> Message.reply(message, "No roles were added")
+        cl -> Message.reply(message, "Studying: #{Listerine.Helpers.unwords(cl)}")
+      end
     end
   end
 
   command unstudy(roles) do
-    role_list = Listerine.Helpers.upcase_words(roles) |> Listerine.Helpers.roles_per_year()
+    if Listerine.Helpers.bot_commands?(message) do
+      role_list = Listerine.Helpers.upcase_words(roles) |> Listerine.Helpers.roles_per_year()
 
-    case Listerine.Channels.rm_role(message, role_list) do
-      [] -> Message.reply(message, "No roles were removed")
-      cl -> Message.reply(message, "Stoped studiyng #{Listerine.Helpers.unwords(cl)}")
+      case Listerine.Channels.rm_role(message, role_list) do
+        [] -> Message.reply(message, "No roles were removed")
+        cl -> Message.reply(message, "Stoped studiyng #{Listerine.Helpers.unwords(cl)}")
+      end
     end
   end
 
@@ -55,19 +59,27 @@ defmodule Listerine.Commands do
     end
   end
 
-  command mancourses() do
-    embed = %{
-      title: "Informação sobre as cadeiras disponíveis",
-      color: 0xFF0000,
-      footer: %{
-        text: "Qualquer dúvida sobre o bot podes usar `$help` para saberes o que podes fazer."
-      },
-      description: "`$study CADEIRA` junta-te às salas das cadeiras
-         `$study 1ano` junta-te a todas as cadeiras de um ano",
-      fields: Listerine.Channels.generate_courses_embed_fields()
-    }
+  @permit :ADMINISTRATOR
+  command setbotcommands() do
+    Listerine.Helpers.set_bot_commands(message.channel)
+    Message.reply(message, "Channel set")
+  end
 
-    Message.reply(message, embed: embed)
+  command mancourses() do
+    if Listerine.Helpers.bot_commands?(message) do
+      embed = %{
+        title: "Informação sobre as cadeiras disponíveis",
+        color: 0xFF0000,
+        footer: %{
+          text: "Qualquer dúvida sobre o bot podes usar `$help` para saberes o que podes fazer."
+        },
+        description: "`$study CADEIRA` junta-te às salas das cadeiras
+         `$study 1ano` junta-te a todas as cadeiras de um ano",
+        fields: Listerine.Channels.generate_courses_embed_fields()
+      }
+
+      Message.reply(message, embed: embed)
+    end
   end
 
   command dropbox() do
@@ -85,15 +97,17 @@ defmodule Listerine.Commands do
   # end
 
   command help() do
-    embed = %{
-      title: "Comandos:",
-      color: 0xFF0000,
-      description:
-        @command_desc
-        |> Enum.map(fn {name, desc} -> "**#{name}** -> #{desc}\n" end)
-        |> Enum.reduce("", fn x, acc -> acc <> x end)
-    }
+    if Listerine.Helpers.bot_commands?(message) do
+      embed = %{
+        title: "Comandos:",
+        color: 0xFF0000,
+        description:
+          @command_desc
+          |> Enum.map(fn {name, desc} -> "**#{name}** -> #{desc}\n" end)
+          |> Enum.reduce("", fn x, acc -> acc <> x end)
+      }
 
-    Message.reply(message, embed: embed)
+      Message.reply(message, embed: embed)
+    end
   end
 end
