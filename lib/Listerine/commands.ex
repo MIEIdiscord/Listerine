@@ -21,7 +21,7 @@ defmodule Listerine.Commands do
       options: :nil,
       example: """
       `#{@prefix}unstudy Algebra PI`
-      Remove-te dos channels de Algebra e PI.
+      Remove-te das salas de Algebra e PI.
       `#{@prefix}unstudy 1ano`
       Remove-te de todas as cadeiras do primeiro ano.
       """,
@@ -63,7 +63,7 @@ defmodule Listerine.Commands do
       role_list = Listerine.Helpers.upcase_words(roles) |> Listerine.Helpers.roles_per_year()
 
       case Listerine.Channels.add_roles(message, role_list) do
-        [] -> Message.reply(message, "No roles were added")
+        [] -> Message.reply(message, "Não foste adicionado a nenhuma sala.")
         cl -> Message.reply(message, "Studying: #{Listerine.Helpers.unwords(cl)}")
       end
     else
@@ -80,8 +80,8 @@ defmodule Listerine.Commands do
       role_list = Listerine.Helpers.upcase_words(roles) |> Listerine.Helpers.roles_per_year()
 
       case Listerine.Channels.rm_role(message, role_list) do
-        [] -> Message.reply(message, "No roles were removed")
-        cl -> Message.reply(message, "Stoped studiyng #{Listerine.Helpers.unwords(cl)}")
+        [] -> Message.reply(message, "Não foste removido de nenhuma sala.")
+        cl -> Message.reply(message, "Stopped studiyng #{Listerine.Helpers.unwords(cl)}")
       end
     else
       Channel.send_message(
@@ -132,8 +132,10 @@ defmodule Listerine.Commands do
     embed = %{
       title: "Informação sobre as cadeiras disponíveis",
       color: 0x000000,
-      description: "`$study CADEIRA` junta-te às salas das cadeiras
-         `$study 1ano` junta-te a todas as cadeiras de um ano",
+      description: """
+      `$study CADEIRA` junta-te às salas das cadeiras
+      `$study 1ano` junta-te a todas as cadeiras de um ano
+      """,
         fields: Listerine.Channels.generate_courses_embed_fields()
       }
 
@@ -194,7 +196,7 @@ defmodule Listerine.Commands do
         %{
           title: "No manual entry for #{arg}",
           color: 0xFF0000,
-          description: "Run $man man to get a list of avalable commands"
+          description: "Usa `$man man` para ver a lista de comandos."
         }
     end
     Message.reply(message, embed: msg)
