@@ -4,7 +4,7 @@ defmodule Listerine.Commands do
   @prefix "$"
   @man_pages [
     study: [
-      description: "Permite a um aluno juntar-se às salas das cadeiras",
+      description: "Permite a um aluno juntar-se às salas das cadeiras.",
       synopse: "`#{@prefix}study [CADEIRA|ANO, ...]`",
       options: :nil,
       example: """
@@ -16,34 +16,34 @@ defmodule Listerine.Commands do
       return_value: "A lista de cadeiras validas a que foste adicionado."
     ],
     unstudy: [
-      description: "Permite a um aluno sair das salas das cadeiras",
+      description: "Permite a um aluno sair das salas das cadeiras.",
       synopse: "`#{@prefix}unstudy [CADEIRA|ANO, ...]`",
       options: :nil,
       example: """
       `#{@prefix}unstudy Algebra PI`
-      Remove-te dos channels de Algebra e PI.",
+      Remove-te dos channels de Algebra e PI.
       `#{@prefix}unstudy 1ano`
       Remove-te de todas as cadeiras do primeiro ano.
       """,
       return_value: "A lista de cadeiras validas a que foste removido."
     ],
     courses: [
-      description: "Permite interagir com as salas das cadeiras",
+      description: "Permite interagir com as salas das cadeiras.",
       synopse: """
       ```
       #{@prefix}courses list
-               mk ano [CADEIRA, ...] (admin)
-               rm [CADEIRA, ...] (admin)
+               mk ano [CADEIRA, ...] (admin only)
+               rm [CADEIRA, ...] (admin only)
       ```
       """,
       options:
       """
       __mk__
-      -> Cria salas das cadeiras especificadas, associadas ao ano especificado
+      -> Cria salas das cadeiras especificadas, associadas ao ano especificado.
       __rm__
-      -> Remove salas das cadeiras especificadas
+      -> Remove salas das cadeiras especificadas.
       __list__
-      -> Lista as cadeiras disponíveis
+      -> Lista as cadeiras disponíveis.
       """,
       example: :nil,
       return_value: :nil
@@ -53,7 +53,7 @@ defmodule Listerine.Commands do
       synopse: "`#{@prefix}material`",
       options: :nil,
       example: :nil,
-      return_value: "O link para o material de apoio do curso"
+      return_value: "O link para o material de apoio do curso."
     ]
     #    datatestes: "Apresenta o link para o calendario de testes.",
   ]
