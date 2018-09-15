@@ -5,18 +5,26 @@ defmodule Listerine.Commands do
   @man_pages [
     study: [
       description: "Permite a um aluno juntar-se às salas das cadeiras",
-      synopse: "`#{@prefix}study [CADEIRA, ...]`",
+      synopse: "`#{@prefix}study [CADEIRA|ANO, ...]`",
       options: :nil,
-      example: "`#{@prefix}study Algebra PI`
-      Adiciona-te às salas de Algebra e PI.",
+      example: """
+      `#{@prefix}study Algebra PI`
+      Adiciona-te às salas de Algebra e PI.
+      `#{@prefix}study 1ano`
+      Adiciona-te a todas as cadeiras do primeiro ano.
+      """,
       return_value: "A lista de cadeiras validas a que foste adicionado."
     ],
     unstudy: [
       description: "Permite a um aluno sair das salas das cadeiras",
-      synopse: "`#{@prefix}unstudy [CADEIRA, ...]`",
+      synopse: "`#{@prefix}unstudy [CADEIRA|ANO, ...]`",
       options: :nil,
-      example: "`#{@prefix}unstudy Algebra PI`
+      example: """
+      `#{@prefix}unstudy Algebra PI`
       Remove-te dos channels de Algebra e PI.",
+      `#{@prefix}unstudy 1ano`
+      Remove-te de todas as cadeiras do primeiro ano.
+      """,
       return_value: "A lista de cadeiras validas a que foste removido."
     ],
     courses: [
