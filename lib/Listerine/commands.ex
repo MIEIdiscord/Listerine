@@ -4,11 +4,11 @@ defmodule Listerine.Commands do
   @prefix "$"
   @man_pages [
     study: [
-      description: "Permite a um aluno se juntar as salas das cadeiras",
+      description: "Permite a um aluno juntar-se às salas das cadeiras",
       synopse: "`#{@prefix}study [CADEIRA, ...]`",
       options: :nil,
       example: "`#{@prefix}study Algebra PI`
-      Adiciona-te aos channels de Algebra e PI.",
+      Adiciona-te às salas de Algebra e PI.",
       return_value: "A lista de cadeiras validas a que foste adicionado."
     ],
     unstudy: [
@@ -31,11 +31,11 @@ defmodule Listerine.Commands do
       options:
       """
       __mk__
-      -> Cria salas das cadeiras especificadas, associadas ao ano expecificado
+      -> Cria salas das cadeiras especificadas, associadas ao ano especificado
       __rm__
       -> Remove salas das cadeiras especificadas
       __list__
-      -> Lista as cadeiras disponiveis
+      -> Lista as cadeiras disponíveis
       """,
       example: :nil,
       return_value: :nil
