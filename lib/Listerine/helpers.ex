@@ -61,24 +61,14 @@ defmodule Listerine.Helpers do
   end
 
   def bot_commands?(message) do
-    id =
-      case File.read("config.json") do
-        {:ok, ""} -> nil
-        {:ok, body} -> Poison.decode!(body)["bot_commands"]
-        _ -> nil
-      end
+    get_bot_commands_id() == message.channel.id
+  end
 
-    cond do
-      id == message.channel.id ->
-        true
-
-      true ->
-        Channel.send_message(
-          Channel.get(id),
-          make_mention(message.author) <> " Esse commando tem de ser utilizado nesta sala!"
-        )
-
-        false
+  def get_bot_commands_id() do
+    case File.read("config.json") do
+      {:ok, ""} -> nil
+      {:ok, body} -> Poison.decode!(body)["bot_commands"]
+      _ -> nil
     end
   end
 

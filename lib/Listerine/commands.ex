@@ -19,6 +19,12 @@ defmodule Listerine.Commands do
         [] -> Message.reply(message, "No roles were added")
         cl -> Message.reply(message, "Studying: #{Listerine.Helpers.unwords(cl)}")
       end
+    else
+      Message.reply(
+        message,
+        Listerine.Helpers.make_mention(message.author) <>
+          " Esse commando tem de ser utilizado nesta sala!"
+      )
     end
   end
 
@@ -30,6 +36,12 @@ defmodule Listerine.Commands do
         [] -> Message.reply(message, "No roles were removed")
         cl -> Message.reply(message, "Stoped studiyng #{Listerine.Helpers.unwords(cl)}")
       end
+    else
+      Channel.send_message(
+        Channel.get(Listerine.Helpers.get_bot_commands_id()),
+        Listerine.Helpers.make_mention(message.author) <>
+          " Esse commando tem de ser utilizado nesta sala!"
+      )
     end
   end
 
@@ -79,6 +91,12 @@ defmodule Listerine.Commands do
       }
 
       Message.reply(message, embed: embed)
+    else
+      Channel.send_message(
+        Channel.get(Listerine.Helpers.get_bot_commands_id()),
+        Listerine.Helpers.make_mention(message.author) <>
+          " Esse commando tem de ser utilizado nesta sala!"
+      )
     end
   end
 
@@ -108,6 +126,12 @@ defmodule Listerine.Commands do
       }
 
       Message.reply(message, embed: embed)
+    else
+      Channel.send_message(
+        Channel.get(Listerine.Helpers.get_bot_commands_id()),
+        Listerine.Helpers.make_mention(message.author) <>
+          " Esse commando tem de ser utilizado nesta sala!"
+      )
     end
   end
 end
