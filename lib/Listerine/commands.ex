@@ -131,10 +131,7 @@ defmodule Listerine.Commands do
     if Listerine.Helpers.bot_commands?(message) do
     embed = %{
       title: "Informação sobre as cadeiras disponíveis",
-      color: 0xFF0000,
-      footer: %{
-        text: "Qualquer dúvida sobre o bot podes usar `$help` para saberes o que podes fazer."
-      },
+      color: 0x000000,
       description: "`$study CADEIRA` junta-te às salas das cadeiras
          `$study 1ano` junta-te a todas as cadeiras de um ano",
         fields: Listerine.Channels.generate_courses_embed_fields()
