@@ -67,8 +67,8 @@ defmodule Listerine.Commands do
         cl -> Message.reply(message, "Studying: #{Listerine.Helpers.unwords(cl)}")
       end
     else
-      Message.reply(
-        message,
+      Channel.send_message(
+        Channel.get(Listerine.Helpers.get_bot_commands_id()),
         Listerine.Helpers.make_mention(message.author) <>
           " Esse commando tem de ser utilizado nesta sala!"
       )
