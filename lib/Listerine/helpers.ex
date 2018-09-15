@@ -42,4 +42,35 @@ defmodule Listerine.Helpers do
     |> Enum.filter(fn x -> x != "" end)
     |> Enum.map(&String.upcase/1)
   end
+
+  def set_bot_commands(channel) do
+    new_map =
+      case File.read("config.json") do
+        {:ok, ""} ->
+          %{"bot_commands" => channel.id}
+
+        {:ok, body} ->
+          map = Poison.decode!(body)
+          Map.put(map, "bot_commands", channel.id)
+
+        _ ->
+          %{"bot_commands" => channel.id}
+      end
+
+    File.write("config.json", Poison.encode!(new_map), [:binary])
+  end
+
+  def bot_commands?(message) do
+    get_bot_commands_id() == message.channel.id
+  end
+
+  def get_bot_commands_id() do
+    case File.read("config.json") do
+      {:ok, ""} -> nil
+      {:ok, body} -> Poison.decode!(body)["bot_commands"]
+      _ -> nil
+    end
+  end
+
+  def make_mention(user), do: "<@#{user.id}>"
 end
