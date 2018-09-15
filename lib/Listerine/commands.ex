@@ -49,11 +49,11 @@ defmodule Listerine.Commands do
       return_value: :nil
     ],
     material: [
-      description: "Apresenta o link para a drive do curso.",
-      synopse: "`#{@prefix}drive`",
+      description: "Apresenta o link para o material de apoio do curso.",
+      synopse: "`#{@prefix}material`",
       options: :nil,
       example: :nil,
-      return_value: "O link para a drive do curso"
+      return_value: "O link para o material de apoio do curso"
     ]
     #    datatestes: "Apresenta o link para o calendario de testes.",
   ]
