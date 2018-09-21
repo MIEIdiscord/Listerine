@@ -98,14 +98,14 @@ defmodule Listerine.Commands do
     [y | cl] = Listerine.Helpers.upcase_words(text)
 
     cond do
-      y in ["1", "2", "3"] ->
+      String.match?(y, Regex.compile!("^[0-9]*$")) ->
         case Listerine.Channels.add_courses(message.guild, y, cl) do
           [] -> Message.reply(message, "Didn't add any channels")
           cl -> Message.reply(message, "Added: #{Listerine.Helpers.unwords(cl)}")
         end
 
       true ->
-        Message.reply(message, "Usage: `mkcourses [1,2,3] [course, ...]`")
+        Message.reply(message, "Usage: `mkcourses year [course, ...]`")
     end
   end
 
