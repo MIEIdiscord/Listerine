@@ -13,7 +13,6 @@ defmodule Listerine.Channels do
       _ -> nil
     end
   end
-  #I need a catamorphism, a catamorphism is all i need
   # Updates the config.json with the new courses.
   defp save_courses(courses) do
     new_map =
