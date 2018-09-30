@@ -13,7 +13,7 @@ defmodule Listerine.Channels do
       _ -> nil
     end
   end
-  #Tshirt
+  #Tshirt CARALHO
   # Updates the config.json with the new courses.
   defp save_courses(courses) do
     new_map =
