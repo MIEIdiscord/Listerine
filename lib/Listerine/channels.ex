@@ -14,6 +14,7 @@ defmodule Listerine.Channels do
     end
   end
   #I need a catamorphism, a catamorphism is all i need
+  #I don't even know what that is
   # Updates the config.json with the new courses.
   defp save_courses(courses) do
     new_map =
