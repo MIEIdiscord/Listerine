@@ -33,4 +33,9 @@ defmodule Listerine.Consumer do
 
     {:ok, state}
   end
+
+  def handle_event({:VOICE_STATE_UPDATE, payload}, state) do
+    Listerine.VoiceChannels.normalize_voice_channels(payload.guild_id)
+    {:ok, state}
+  end
 end
