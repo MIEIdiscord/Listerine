@@ -81,7 +81,7 @@ defmodule Listerine.Commands do
 
       case Listerine.Channels.rm_role(message, role_list) do
         [] -> Message.reply(message, "Não foste removido de nenhuma sala.")
-        cl -> Message.reply(message, "Stopped studiyng #{Listerine.Helpers.unwords(cl)}")
+        cl -> Message.reply(message, "Stopped studying #{Listerine.Helpers.unwords(cl)}")
       end
     else
       Channel.send_message(
