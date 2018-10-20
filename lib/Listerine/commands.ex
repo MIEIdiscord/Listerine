@@ -13,7 +13,7 @@ defmodule Listerine.Commands do
       `#{@prefix}study 1ano`
       Adiciona-te a todas as cadeiras do primeiro ano.
       """,
-      return_value: "A lista de cadeiras validas a que foste adicionado."
+      return_value: "A lista de cadeiras válidas a que foste adicionado."
     ],
     unstudy: [
       description: "Permite a um aluno sair das salas das cadeiras.",
@@ -25,7 +25,7 @@ defmodule Listerine.Commands do
       `#{@prefix}unstudy 1ano`
       Remove-te de todas as cadeiras do primeiro ano.
       """,
-      return_value: "A lista de cadeiras validas a que foste removido."
+      return_value: "A lista de cadeiras válidas de que foste removido."
     ],
     courses: [
       description: "Permite interagir com as salas das cadeiras.",
